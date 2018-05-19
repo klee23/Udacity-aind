@@ -31,38 +31,16 @@ class ActionLayer(BaseActionLayer):
                 return True;    
         '''
         
-        # print("--------",type(actionA.effects)) = <class 'frozenset'>
-        # print("--------",type(actionA)) = <class 'layer.actionNode'>       
-        
         for x in actionA.effects:
-            # print("--------",type(x in actionA.effect)) = <class 'aimacode.utils.expr'>
-            # print("--------",type(x.op)) = <class 'str'>
-            # print("--------",type(x.args)) = <class 'tuple'>
             for y in actionB.effects:
-                    #print("ypu3------> ",x," :: ", actionB.effects)
-                    #print("x= ",x)
-                    #print("x= ",expr(x))
-                    #print("x.op",x.op )
-                    #if(x.op!='~'):
-                    #    print("x neg", Expr('~',x))
-                    #print("x.arg---",x.args )
-                    #print("x.arg",x.args[0] )
-                    #print("y= ",y)
-                    #print("y.op",y.op )
-                    #print("y.arg",y.args )'''
+                #check to see if actionA and action B are opposites...
                     if (x.op =='~' and y.op!='~'):
-                        #print("ypu")
-                        #print("x= ",x)
-                        #print("y= ",y)
                         y_neg = Expr('~',y)
-                        #print("~y= ",y_neg)
                         if y_neg.__eq__(x):
-                            #print(x, " = ", y_neg)
                             return True;
                     if (y.op =='~' and x.op!='~'):
                         x_neg = Expr('~',x)
                         if x_neg.__eq__(y):
-                            #print(y, " = ", x_neg)
                             return True;
                 
         return False;    
@@ -80,28 +58,26 @@ class ActionLayer(BaseActionLayer):
         #raise NotImplementedError
         for x in actionA.effects:
             for y in actionB.preconditions:
+                #check to see if action A effects negates actionB preconditions
                 if (x.op =='~' and y.op!='~'):
                     y_neg = Expr('~',y);
                     if y_neg.__eq__(x):
-                        #print(x, " = ", y_neg);
                         return True;
                 if (y.op =='~' and x.op!='~'):
                     x_neg = Expr('~',x);
                     if x_neg.__eq__(y):
-                        #print(y, " = ", x_neg);
                         return True;
             
         for x in actionB.effects:
             for y in actionA.preconditions:
+                #check to see if action B effects negates actionA preconditions
                 if (x.op =='~' and y.op!='~'):
                     y_neg = Expr('~',y);
                     if y_neg.__eq__(x):
-                        #print(x, " = ", y_neg);
                         return True;
                 if (y.op =='~' and x.op!='~'):
                     x_neg = Expr('~',x);
                     if x_neg.__eq__(y):
-                        #print(y, " = ", x_neg);
                         return True;
             
         return False;    
@@ -114,25 +90,15 @@ class ActionLayer(BaseActionLayer):
         layers.ActionNode
         layers.BaseLayer.parent_layer
         """
-        # TODO: implement this function
-        # raise NotImplementedError
-        # print(self.parent_layer.is_mutex(actionA,actionB))
-        # print(type(self.parent_layer.children))
-        # print(self.parent_layer.children)
         for x in actionA.preconditions:
            for y in actionB.preconditions:
-               # print("-----",type(x),"->",len(x.args),"->",x.args)
-               #print(type(x),"->",x," :: ",type(y),"->",y)
-               #print(type(x),"->",(x.__invert__)," :: ",type(y),"->",(y) )
                 if (x.op =='~' and y.op!='~'):
                     y_neg = Expr('~',y);
                     if y_neg.__eq__(x):
-                        #print(x, " = ", y_neg);
                         return True;
                 if (y.op =='~' and x.op!='~'):
                     x_neg = Expr('~',x);
                     if x_neg.__eq__(y):
-                        #print(y, " = ", x_neg);
                         return True;
 
             
@@ -150,24 +116,9 @@ class LiteralLayer(BaseLiteralLayer):
         """
         # TODO: implement this function
         # raise NotImplementedError
-        
-        #print("------------------------")
-        #print(literalA," : literal A type ->",type(literalA)) #= <class 'aimacode.utils.expr'>
-        #print(literalB," : literal B type ->",type(literalB)) #= <class 'aimacode.utils.expr'>
-        
-        # print(self, "self type -> ", type(self)) #= <class 'my_planning_graph.literal_layer'>
-        # print(self.parent_layer, "self.parent_layer type -> ", type(self.parent_layer)) #= <class 'my_planning_graph.ActionLayer'>
-        
-        #print(self.parents, "type self.parents->",type(self.parents)) #= <class 'collection.defaultdict'>
-        #print(self.parents[literalA], "type self.parents[literalA]->",type(self.parents[literalA]))
-        #print(self.parents[literalB], "type self.parents[literalB]->",type(self.parents[literalB]))
 
         for x in self.parents[literalA]:
             for y in self.parents[literalB]:
-               # print("x= ",x)
-               # print("y= ",y)
-               # print("is_mutex? = ",self.is_mutex(x,y))
-               # print("parent_layer.is_mutex? = ",self.parent_layer.is_mutex(x,y))
                 if not self.parent_layer.is_mutex(x,y):
                     return False;
 
@@ -175,20 +126,13 @@ class LiteralLayer(BaseLiteralLayer):
 
     def _negation(self, literalA, literalB):
         """ Return True if two literals are negations of each other """
-        # TODO: implement this function
-        # raise NotImplementedError
-        #print("----")
-        #print("literal A = ",literalA," : args = ",literalA.args," : op = ", literalA.op)
-        #print("literal B = ",literalB," : args = ",literalB.args," : op = ", literalB.op)
-
+        
         if literalA.op == '~' and literalB.op!='~':
             temp_neg = Expr('~',literalB);
-            #print("ned literalB",temp_neg);
             if temp_neg.__eq__(literalA):
                 return True
         if literalA.op != '~' and literalB.op=='~':
             temp_neg = Expr('~',literalA);
-            #print("ned literalA",temp_neg);
             if temp_neg.__eq__(literalB):
                 return True            
 
@@ -250,12 +194,6 @@ class PlanningGraph:
         --------
         Russell-Norvig 10.3.1 (3rd Edition)
         """
-        # TODO: implement this function
-        # raise NotImplementedError
-        #print("-------------------")
-        #print("goal = ", self.goal )
-        #print("literal_layers = ", self.literal_layers, " -> ", type(self.literal_layers))
-        #print("*******************")
         
         levelSum = 0;
         layer = 0;
@@ -278,56 +216,6 @@ class PlanningGraph:
             # move to next layer...
             layer = layer + 1;
             self._extend();
-            
-
-        '''for x in range(len(self.literal_layers)):
-            print(self.literal_layers[x]);
-            print(type(self.literal_layers[x]))
-            print(self.literal_layers[x]);
-            for x in self.literal_layers[x].children:
-                #print(self.literal_layers[x].children)
-                print("children of literal layer = ",x);'''
-                
-        '''for thing in self.literal_layers:
-            print("literal (thing.child)= ",thing.children);
-            for kid in thing.children:
-                print("literal layer children = ", kid)
-                
-        for idx in range(len(self.literal_layers)):
-            print("self.literal_layers[",idx,"]= ", self.literal_layers[idx]);
-            for thing in self.literal_layers[idx]:
-                print("self.literal_layers[",idx,"] thing in = ",thing)'''
-
-        '''print(" ")
-        print("action_layers = ", self.action_layers, " -> ", type(self.action_layers))         
-        for action in self.action_layers:
-            print("action = ", action)
-            for kid in action.children:
-                print("action layer children = ",kid)
-        
-        print(" ")
-        print("actionNodes = ", self._actionNodes);#  " -> ", type(self._actionNodes) = actionNode 
-        for action in self._actionNodes:
-            print("action node action = ", action, "type = ",type(action));
-            print("action node action effect = ",action.effects)   
-            print("action node action precon = ",action.preconditions)'''
-        
-
-        '''
-        # we extend the whole graph first...
-        #levelSum=0;
-        while not self._is_leveled:
-            self._extend();    
-        for goals in self.goal:
-            isGoalFound = False;
-            for layer in range(len(self.literal_layers)):
-                for var in self.literal_layers[layer]:
-                    if goals.__eq__(var):
-                        isGoalFound = True;
-                        levelSum = levelSum + layer;
-                        break;
-                if isGoalFound:
-                    break;'''
         
         return levelSum;
 
