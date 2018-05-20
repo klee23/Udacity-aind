@@ -90,18 +90,12 @@ class ActionLayer(BaseActionLayer):
         layers.ActionNode
         layers.BaseLayer.parent_layer
         """
+                              
         for x in actionA.preconditions:
-           for y in actionB.preconditions:
-                if (x.op =='~' and y.op!='~'):
-                    y_neg = Expr('~',y);
-                    if y_neg.__eq__(x):
-                        return True;
-                if (y.op =='~' and x.op!='~'):
-                    x_neg = Expr('~',x);
-                    if x_neg.__eq__(y):
-                        return True;
-
-            
+           for y in actionB.preconditions:    
+                if (self.parent_layer.is_mutex(x,y)):
+                    return True;
+                    
         return False;    
 
 
@@ -300,9 +294,6 @@ class PlanningGraph:
                 isGoalMutex = False;
                 for goal in goalList:
                     for otherGoal in goalList:
-                        print("goal = ",goal,"other goal = ",otherGoal,"mutex = ",self.literal_layers[layer].is_mutex(goal,otherGoal))
-                        #print("inconsistent_support ?= ",self.literal_layers[layer]._inconsistent_support(goal,otherGoal))
-                        #print("negation ?= ",self.literal_layers[layer]._negation(goal,otherGoal))
                         if self.literal_layers[layer].is_mutex(goal,otherGoal):
                             isGoalMutex = True;                                
                 if not isGoalMutex:
