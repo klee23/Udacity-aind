@@ -17,19 +17,6 @@ class ActionLayer(BaseActionLayer):
         layers.ActionNode
         """
         #------ TODO: implement this function
-
-        '''
-        for x in actionA.effects:
-            if x in actionB.effects:
-                #print("ypu1 -> ",x," :: ", actionB.effects)
-                #return True;
-                print("-")
-                
-        for x in actionB.effects:
-            if x in actionA.effects:
-                #print("ypu2 -> ",x," :: ", actionA.effects)
-                return True;    
-        '''
         
         for x in actionA.effects:
             for y in actionB.effects:
@@ -289,7 +276,6 @@ class PlanningGraph:
             if layer > 1000000:
                 break;
             # while graph not fully explored.
-            print("goal list subset of literl layer[",layer,"]? = ",set(goalList).issubset(self.literal_layers[layer]))
             if set(goalList).issubset(self.literal_layers[layer]):
                 isGoalMutex = False;
                 for goal in goalList:
